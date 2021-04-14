@@ -1,17 +1,38 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import Todo from "./components/Todo";
+import TodoForm from "./components/TodoForm";
+import { useState } from "react";
+import "./App.css";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const App = () => {
+  const [todos, setTodos] = useState([]);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  const handleStatus = (id) => {
+    const newTodos = [...todos];
+    const toChange = newTodos.find((todo) => todo.id === id);
+    toChange.isCompleted = !toChange.isCompleted;
+    setTodos(newTodos);
+  };
+
+  const handleAdd = (res) => {
+    const toPush = { id: todos.length + 1, title: res, isCompleted: false };
+    const newTodos = [...todos];
+    newTodos.push(toPush);
+    setTodos(newTodos);
+  };
+
+  return (
+    <div>
+      <h1>Todo list</h1>
+      <TodoForm onSubmit={handleAdd} />
+      <ul>
+        {todos.map((todo) => (
+          <Todo todo={todo} key={todo.id} changeStatus={handleStatus}></Todo>
+        ))}
+      </ul>
+    </div>
+  );
+};
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
